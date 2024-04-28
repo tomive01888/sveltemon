@@ -4,7 +4,7 @@
 </script>
 
 <div class="app">
-  <Header />
+  <Header linkname="ioadioas" />
 
   <main class="test class">
     <slot />
