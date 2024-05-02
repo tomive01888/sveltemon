@@ -1,59 +1,55 @@
 <script>
-	import Counter from './Counter.svelte';
-	import welcome from '$lib/images/svelte-welcome.webp';
-	import welcome_fallback from '$lib/images/svelte-welcome.png';
+  import PokedexCard from "../components/PokedexCard.svelte";
+  import { onMount } from "svelte";
+  //   import { pokeDetails } from "./+page";
+
+  const kantoDex = "https://pokeapi.co/api/v2/pokedex/kanto/";
+
+  const kantoAdditional = "https://pokeapi.co/api/v2/pokemon/";
+
+  let pokemon = [];
+
+  onMount(() => {
+    async function fetchAPI() {
+      const req = await fetch(kantoDex);
+
+      const result = await req.json();
+      console.log("list", result);
+
+      pokemon = result.pokemon_entries;
+      console.log("list", pokemon);
+
+      const imgRequest = await fetchImage(pokemon);
+
+      //   const imgResult = imgRequest;
+
+      //   [0].pokemon_species.url
+
+      console.log("iiiimmmmaaage", imgRequest);
+    }
+
+    fetchAPI();
+  });
+
+  async function fetchImage(arr) {
+    const imageRequests = arr.map(async (poke) => {
+      const imageReq = await fetch(poke.pokemon_species.url);
+      const imageRes = await imageReq.json();
+      return imageRes;
+    });
+
+    return Promise.all(imageRequests);
+  }
 </script>
 
 <svelte:head>
-	<title>Home</title>
-	<meta name="description" content="Svelte demo app" />
+  <title>Sveltemon</title>
 </svelte:head>
 
-<section>
-	<h1>
-		<span class="welcome">
-			<picture>
-				<source srcset={welcome} type="image/webp" />
-				<img src={welcome_fallback} alt="Welcome" />
-			</picture>
-		</span>
-
-		to your new<br />SvelteKit app
-	</h1>
-
-	<h2>
-		try editing <strong>src/routes/+page.svelte</strong>
-	</h2>
-
-	<Counter />
-</section>
+{#each pokemon as poke}
+  <PokedexCard name={poke.pokemon_species.name} />
+{/each}
+<section></section>
 
 <style>
-	section {
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-		align-items: center;
-		flex: 0.6;
-	}
-
-	h1 {
-		width: 100%;
-	}
-
-	.welcome {
-		display: block;
-		position: relative;
-		width: 100%;
-		height: 0;
-		padding: 0 0 calc(100% * 495 / 2048) 0;
-	}
-
-	.welcome img {
-		position: absolute;
-		width: 100%;
-		height: 100%;
-		top: 0;
-		display: block;
-	}
 </style>
