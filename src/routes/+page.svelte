@@ -1,55 +1,41 @@
 <script>
   import PokedexCard from "../components/PokedexCard.svelte";
-  import { onMount } from "svelte";
-  //   import { pokeDetails } from "./+page";
 
-  const kantoDex = "https://pokeapi.co/api/v2/pokedex/kanto/";
+  const originalPokemon = "https://pokeapi.co/api/v2/pokemon?limit=151";
 
-  const kantoAdditional = "https://pokeapi.co/api/v2/pokemon/";
+  const getPokemon = async () => {
+    const request = await fetch(originalPokemon);
+    const data = await request.json();
+    return data;
+  };
 
-  let pokemon = [];
-
-  onMount(() => {
-    async function fetchAPI() {
-      const req = await fetch(kantoDex);
-
-      const result = await req.json();
-      console.log("list", result);
-
-      pokemon = result.pokemon_entries;
-      console.log("list", pokemon);
-
-      const imgRequest = await fetchImage(pokemon);
-
-      //   const imgResult = imgRequest;
-
-      //   [0].pokemon_species.url
-
-      console.log("iiiimmmmaaage", imgRequest);
-    }
-
-    fetchAPI();
-  });
-
-  async function fetchImage(arr) {
-    const imageRequests = arr.map(async (poke) => {
-      const imageReq = await fetch(poke.pokemon_species.url);
-      const imageRes = await imageReq.json();
-      return imageRes;
-    });
-
-    return Promise.all(imageRequests);
-  }
+  const getInfo = async (urlToFetch) => {
+    if (!urlToFetch) return;
+    const req = await fetch(urlToFetch);
+    const details = await req.json();
+    return details;
+  };
 </script>
 
 <svelte:head>
   <title>Sveltemon</title>
 </svelte:head>
 
-{#each pokemon as poke}
-  <PokedexCard name={poke.pokemon_species.name} />
-{/each}
-<section></section>
+{#await getPokemon()}
+  <p>...fetching</p>
+{:then data}
+  {#each data.results as pokemon}
+    {#await getInfo(pokemon.url)}
+      <p>..getting image</p>
+    {:then details}
+      <PokedexCard name={pokemon.name} src={details.sprites.front_default} />
+    {:catch error}
+      <p>...error getting details {error.message}</p>
+    {/await}
+  {/each}
+{:catch error}
+  <p>Error, something went wrong!</p>
+{/await}
 
 <style>
 </style>

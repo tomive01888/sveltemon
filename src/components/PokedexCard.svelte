@@ -1,8 +1,12 @@
 <script>
   export let name = "";
+  export let src = "";
 </script>
 
-<p>{name}</p>
+<div class="pokecard">
+  <img {src} alt={name} />
+  <p>{name}</p>
+</div>
 
 <style>
   p {

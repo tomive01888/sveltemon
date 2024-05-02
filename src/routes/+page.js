@@ -3,18 +3,3 @@
 export const prerender = true;
 
 
-
-
-// export async function pokeDetails(arr){
-
-
-//     arr.forEach((poke) => {
-//         const image = fetch(poke.pokemon_species.url);
-    
-//         console.log(image);
-//       });
-
-
-//       return image
-
-// }
