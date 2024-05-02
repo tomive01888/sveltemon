@@ -20,17 +20,20 @@
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+    /* background-color: red; */
+  
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
   }
 
   main {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    padding: 1rem;
     width: 100%;
-    max-width: 64rem;
+    max-width: 92rem;
     margin: 0 auto;
-    box-sizing: border-box;
   }
 
   footer {
